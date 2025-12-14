@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Кнопка с анимацией воды</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: transparent;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .btn {
+    position: relative;
+    width: 200px;
+    height: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: #2ecc71;
+    border: 2px solid #27ae60;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  /* "Вода" внутри кнопки */
+  .btn .water {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: #27ae60;
+    border-radius: 0 0 10px 10px;
+    z-index: 0;
+    transition: height 1.2s ease-out;
+  }
+
+  /* Брызги */
+  .btn .splashes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .splash {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #27ae60;
+    border-radius: 50%;
+    opacity: 0;
+    animation: splashAnim 0.8s forwards;
+  }
+
+  @keyframes splashAnim {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    50% { transform: translateY(-15px) scale(1.2); opacity: 1; }
+    100% { transform: translateY(-25px) scale(0.5); opacity: 0; }
+  }
+
+  .btn span {
+    position: relative;
+    z-index: 2;
+  }
+
+</style>
+</head>
+<body>
+
+<button class="btn" onclick="fillWater(this)">
+  <span>НАЖМИ МЕНЯ</span>
+  <div class="water"></div>
+  <div class="splashes"></div>
+</button>
+
+<script>
+function fillWater(button) {
+  const water = button.querySelector('.water');
+  const splashesContainer = button.querySelector('.splashes');
+
+  // Заполняем воду
+  water.style.height = '100%';
+
+  // Создаём брызги
+  for (let i = 0; i < 8; i++) {
+    const splash = document.createElement('div');
+    splash.classList.add('splash');
+    splash.style.left = `${Math.random() * 90 + 5}%`;
+    splash.style.animationDelay = `${Math.random() * 0.3}s`;
+    splashesContainer.appendChild(splash);
+
+    // Удаляем брызги через 1.2s
+    setTimeout(() => {
+      splash.remove();
+    }, 1200);
+  }
+
+  // Небольшой эффект нажатия
+  button.style.transform = 'scale(1.05)';
+  setTimeout(() => button.style.transform = 'scale(1)', 150);
+}
+</script>
+
+</body>
+</html>
