@@ -2,22 +2,25 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Кнопка с постепенным заполнением и уведомлением</title>
+<title>Кнопка Проверка пальцев</title>
 <style>
   body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
     background: transparent;
     font-family: 'Segoe UI', sans-serif;
   }
 
   .btn {
     position: relative;
-    width: 200px;
+    width: 90%;          /* адаптивная ширина */
+    max-width: 300px;    /* максимум для больших экранов */
+    min-width: 180px;    /* минимум для мобильных */
     height: 60px;
-    font-size: 18px;
+    font-size: 1.2rem;   /* подстраивается под размеры кнопки */
     font-weight: bold;
     color: white;
     background: #2ecc71;
@@ -26,6 +29,7 @@
     overflow: visible;
     cursor: pointer;
     z-index: 1;
+    transition: transform 0.15s;
   }
 
   .btn .water {
@@ -68,12 +72,21 @@
     position: relative;
     z-index: 2;
   }
+
+  /* Адаптивный шрифт */
+  @media (max-width: 600px) {
+    .btn { font-size: 1rem; height: 50px; }
+  }
+
+  @media (min-width: 1200px) {
+    .btn { font-size: 1.3rem; height: 70px; }
+  }
 </style>
 </head>
 <body>
 
 <button class="btn" onclick="fillWaterStep(this)">
-  <span>НАЖМИ МЕНЯ</span>
+  <span>Проверка пальцев</span>
   <div class="water"></div>
   <div class="splashes"></div>
 </button>
@@ -83,29 +96,25 @@ let clickCount = 0;
 const maxClicks = 30;
 
 function fillWaterStep(button) {
-  if (clickCount >= maxClicks) return; // Уже заполнено
+  if (clickCount >= maxClicks) return;
 
   clickCount++;
   const water = button.querySelector('.water');
   const splashesContainer = button.querySelector('.splashes');
 
-  // Поднимаем воду
   const heightPercent = (clickCount / maxClicks) * 100;
   water.style.height = heightPercent + '%';
 
-  // Создаём брызги
+  // Брызги
   for (let i = 0; i < 8; i++) {
     const splash = document.createElement('div');
     splash.classList.add('splash');
-
     const dx = (Math.random() - 0.5) * 80;
     const dy = -Math.random() * 30 - 10;
     splash.style.setProperty('--dx', dx + 'px');
     splash.style.setProperty('--dy', dy + 'px');
-
     splash.style.left = `${Math.random() * 90 + 5}%`;
     splash.style.animationDelay = `${Math.random() * 0.3}s`;
-
     splashesContainer.appendChild(splash);
     setTimeout(() => splash.remove(), 1200);
   }
@@ -114,14 +123,14 @@ function fillWaterStep(button) {
   button.style.transform = 'scale(1.05)';
   setTimeout(() => button.style.transform = 'scale(1)', 150);
 
-  // Действие при полном заполнении
+  // Действие после полного заполнения
   if (clickCount === maxClicks) {
     setTimeout(() => {
       alert('🎉 Поздравляю! У вас сильные палецы! 💪');
       // Сброс кнопки
       water.style.height = '0%';
       clickCount = 0;
-    }, 300); // небольшой тайминг, чтобы вода успела заполниться
+    }, 300);
   }
 }
 </script>
