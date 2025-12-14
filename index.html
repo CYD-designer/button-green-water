@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Кнопка с внешними всплесками</title>
+<title>Кнопка с постепенным заполнением и уведомлением</title>
 <style>
   body {
     display: flex;
@@ -23,12 +23,11 @@
     background: #2ecc71;
     border: 2px solid #27ae60;
     border-radius: 12px;
-    overflow: visible; /* Позволяем брызгам выходить за пределы */
+    overflow: visible;
     cursor: pointer;
     z-index: 1;
   }
 
-  /* Вода внутри кнопки */
   .btn .water {
     position: absolute;
     bottom: 0;
@@ -41,13 +40,12 @@
     transition: height 0.3s ease-out;
   }
 
-  /* Брызги */
   .btn .splashes {
     position: absolute;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    overflow: visible; /* Всплески могут выйти за пределы кнопки */
+    overflow: visible;
   }
 
   .splash {
@@ -91,18 +89,17 @@ function fillWaterStep(button) {
   const water = button.querySelector('.water');
   const splashesContainer = button.querySelector('.splashes');
 
-  // Рассчитываем высоту воды
+  // Поднимаем воду
   const heightPercent = (clickCount / maxClicks) * 100;
   water.style.height = heightPercent + '%';
 
-  // Создаём брызги, которые могут разлетаться наружу
+  // Создаём брызги
   for (let i = 0; i < 8; i++) {
     const splash = document.createElement('div');
     splash.classList.add('splash');
 
-    // Рандомное смещение в X и Y
-    const dx = (Math.random() - 0.5) * 80; // по горизонтали
-    const dy = -Math.random() * 30 - 10;   // вверх
+    const dx = (Math.random() - 0.5) * 80;
+    const dy = -Math.random() * 30 - 10;
     splash.style.setProperty('--dx', dx + 'px');
     splash.style.setProperty('--dy', dy + 'px');
 
@@ -110,20 +107,24 @@ function fillWaterStep(button) {
     splash.style.animationDelay = `${Math.random() * 0.3}s`;
 
     splashesContainer.appendChild(splash);
-
     setTimeout(() => splash.remove(), 1200);
   }
 
-  // Лёгкий эффект нажатия
+  // Эффект нажатия
   button.style.transform = 'scale(1.05)';
   setTimeout(() => button.style.transform = 'scale(1)', 150);
 
+  // Действие при полном заполнении
   if (clickCount === maxClicks) {
-    alert('Кнопка полностью заполнена! ✅');
+    setTimeout(() => {
+      alert('🎉 Поздравляю! У вас сильные палецы! 💪');
+      // Сброс кнопки
+      water.style.height = '0%';
+      clickCount = 0;
+    }, 300); // небольшой тайминг, чтобы вода успела заполниться
   }
 }
 </script>
 
 </body>
 </html>
-
